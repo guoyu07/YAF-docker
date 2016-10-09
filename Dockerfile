@@ -54,8 +54,7 @@ RUN	echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/reposit
 	&& ln -s /usr/bin/php7 /usr/bin/php \
 	&& sed -i '$ d' /etc/apk/repositories \
 	# ClEAN
-	&& rm -rf /var/cache/apk/* /var/tmp/* /tmp/*  /etc/ssl/*
-	&& /usr/include/*
+	&& rm -rf /var/cache/apk/* /var/tmp/* /tmp/*  /etc/ssl/* /usr/include/*
 
 #add extensions modules 
 # COPY modules/ /usr/lib/php7/modules/
