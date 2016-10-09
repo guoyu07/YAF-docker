@@ -1,7 +1,7 @@
-FROM newfuture/yaf
+FROM newfuture/yaf:php7
 MAINTAINER New Future <docker@newfuture.cc>
 
-LABEL Name="YAF-docker" Description="mimimal docker image for PHP YAF with php-fpm"
+LABEL Name="YAF-docker" Description="mimimal docker image for PHP7 YAF with php-fpm"
 
 ENV FPM_PORT=9000 \
 	FPM_CONF=/etc/php5/php-fpm.conf \
@@ -9,7 +9,7 @@ ENV FPM_PORT=9000 \
 	FPM_USER=www-data
 	
 # instal PHP-fpm
-RUN	apk add --no-cache php5-fpm \
+RUN	apk add --no-cache php7-fpm \
 	# config
 	&& echo -e "[global] \
 		\n error_log = /proc/self/fd/2 \

@@ -1,37 +1,41 @@
-FROM alpine:latest
+FROM alpine:edge
 MAINTAINER New Future <docker@newfuture.cc>
 
-LABEL Name="YAF-docker" Description="mimimal docker image for PHP YAF"
+LABEL Name="YAF-docker" Description="mimimal docker image for PHP7 YAF"
 
 # Environments
 ENV TIMEZONE=UTC \
 	PHP_MEMORY_LIMIT=512M \
 	MAX_UPLOAD=50M \
-	PHP_INI=/etc/php5/php.ini \
+	PHP_INI=/etc/php7/php.ini \
 	PORT=80
 
 # instal PHP
-RUN	apk add --no-cache \
+RUN	echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories \
+	&& apk update \
+	&& apk upgrade \
+	&& apk add --no-cache \
 		libmemcached-libs \
 	#php and ext
-		php5-mcrypt \
-		php5-openssl \
-        php5-curl \
-		php5-json \
-		php5-dom \
-		php5-bcmath \
-		php5-gd \
-        php5-pdo \
-		php5-pdo_mysql \
-		php5-pdo_sqlite \
-        php5-pdo_odbc \
-    	php5-pdo_dblib \
-		php5-gettext \
-		php5-memcache \
-		php5-iconv \
-		php5-ctype \
-		php5-phar \
-		php5-cli\
+		php7-mcrypt \
+		php7-openssl \
+        php7-curl \
+		php7-json \
+		php7-dom \
+		php7-bcmath \
+		php7-gd \
+        php7-pdo \
+		php7-pdo_mysql \
+		php7-pdo_sqlite \
+        php7-pdo_odbc \
+    	php7-pdo_dblib \
+		php7-gettext \
+		php7-iconv \
+		php7-ctype \
+		php7-phar \
+		php7\
+		php7-memcached \
+		php7-redis \
     # Set php.ini
     && CHANGE_INI(){ \
         if [ $(cat ${PHP_INI} | grep -c "^\s*$1") -eq 0 ] ;\
@@ -42,20 +46,23 @@ RUN	apk add --no-cache \
 	&& CHANGE_INI cgi.fix_pathinfo 0 \
 	&& CHANGE_INI display_errors 1 \
 	&& CHANGE_INI display_startup_errors 1 \
+	&& CHANGE_INI zend.assertions 0 \
 	&& ADD_INI(){ echo "$*">> $PHP_INI; } \
-	&& ADD_INI extension = redis.so \
-	&& ADD_INI extension = memcached.so \
-	&& ADD_INI extension = yaf.so \
 	&& ADD_INI [yaf] \
+	# && ADD_INI extension = yaf.so \	
 	&& ADD_INI yaf.environ = dev \
+	&& ln -s /usr/bin/php7 /usr/bin/php \
+	&& sed -i '$ d' /etc/apk/repositories \
 	# ClEAN
-	&& rm -rf /var/cache/apk/* /var/tmp/* /tmp/* /etc/ssl/* /usr/include/*
+	&& rm -rf /var/cache/apk/* /var/tmp/* /tmp/* 
+	
+	# /etc/ssl/* /usr/include/*
 
-#COPY build extensions 
-COPY modules/ /usr/lib/php5/modules/
+#add extensions modules 
+# COPY modules/ /usr/lib/php7/modules/
 
 WORKDIR /newfuture/yaf
 
 EXPOSE $PORT
-	
+
 CMD php -S 0.0.0.0:$PORT $([ ! -f index.php ]&&[ -d public ]&&echo '-t public')
