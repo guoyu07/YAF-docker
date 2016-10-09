@@ -27,7 +27,7 @@ RUN apk add --no-cache --virtual .fetch-deps \
 
 RUN  BUILD(){ \
         curl -#SL http://pecl.php.net/get/$1.tgz | tar zx -C $TMP \
-        && cd "$TMP/$1" && phpize7 &&./configure --with-php-config=php-config7 && make && make test \
+        && cd "$TMP/$1" && phpize7 &&./configure --with-php-config=php-config7 && make test && make install \
         && cp /$TMP/$1/modules/*.so $DIR;} \
     && BUILD yaf-3.0.4
 

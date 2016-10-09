@@ -4,8 +4,8 @@ MAINTAINER New Future <docker@newfuture.cc>
 LABEL Name="YAF-docker" Description="mimimal docker image for PHP7 YAF with php-fpm"
 
 ENV FPM_PORT=9000 \
-	FPM_CONF=/etc/php5/php-fpm.conf \
-	FPM_PATH=/etc/php5/fpm.d \
+	FPM_CONF=/etc/php7/php-fpm.conf \
+	FPM_PATH=/etc/php7/fpm.d \
 	FPM_USER=www-data
 	
 # instal PHP-fpm
