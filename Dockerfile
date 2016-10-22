@@ -12,8 +12,6 @@ ENV TIMEZONE=UTC \
 
 # instal PHP
 RUN	echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories \
-	&& apk update \
-	&& apk upgrade \
 	&& apk add --no-cache \
 		libmemcached-libs \
 	#php and ext
@@ -49,7 +47,7 @@ RUN	echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/reposit
 	&& CHANGE_INI zend.assertions 0 \
 	&& ADD_INI(){ echo "$*">> $PHP_INI; } \
 	&& ADD_INI [yaf] \
-	# && ADD_INI extension = yaf.so \	
+	&& ADD_INI extension = yaf.so \	
 	&& ADD_INI yaf.environ = dev \
 	&& ln -s /usr/bin/php7 /usr/bin/php \
 	&& sed -i '$ d' /etc/apk/repositories \
@@ -57,7 +55,7 @@ RUN	echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/reposit
 	&& rm -rf /var/cache/apk/* /var/tmp/* /tmp/*  /etc/ssl/* /usr/include/*
 
 #add extensions modules 
-# COPY modules/ /usr/lib/php7/modules/
+COPY modules/ /usr/lib/php7/modules/
 
 WORKDIR /newfuture/yaf
 
