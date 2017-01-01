@@ -1,14 +1,14 @@
-FROM newfuture/yaf:php7
+FROM alpine:3.5
 
 ENV TMP="/tmp/" \
     DIR="/newfuture/yaf"
 
 WORKDIR $DIR
-# VOLUME ["/home/newfuture/docker/YAF-docker/modules","$DIR"]
+VOLUME ["/home/newfuture/docker/YAF-docker/modules","$DIR"]
 
 # RUN apk update && apk upgrade
 
-RUN apk add --no-cache --virtual .fetch-deps \
+RUN apk add --no-cache\
         curl \
         autoconf \
         g++ \
@@ -26,9 +26,10 @@ RUN apk add --no-cache --virtual .fetch-deps \
 #     && make install
 
 RUN  BUILD(){ \
-        curl -#SL http://pecl.php.net/get/$1.tgz | tar zx -C $TMP \
+        curl -#SL https://pecl.php.net/get/$1.tgz | tar zx -C $TMP \
         && cd "$TMP/$1" && phpize7 &&./configure --with-php-config=php-config7 && make test && make install \
         && cp /$TMP/$1/modules/*.so $DIR;} \
     && BUILD yaf-3.0.4
+    && BUILD redis-3.1.0
 
-RUN apk del .fetch-deps
+# RUN apk del .fetch-deps

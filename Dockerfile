@@ -1,4 +1,4 @@
-FROM alpine:edge
+FROM alpine:3.5
 MAINTAINER New Future <docker@newfuture.cc>
 
 LABEL Name="YAF-docker" Description="mimimal docker image for PHP7 YAF"
