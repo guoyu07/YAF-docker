@@ -7,14 +7,14 @@ LABEL Name="YAF-docker" Description="mimimal docker image for PHP7 YAF"
 ENV TIMEZONE=UTC \
 	PHP_MEMORY_LIMIT=512M \
 	MAX_UPLOAD=50M \
-	PHP_INI=/etc/php7/php.ini \
 	PORT=80
 
 # instal PHP
-RUN	echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories \
+RUN	PHP_INI='/etc/php7/php.ini' \
+	&& PHP_CONF='/etc/php7/conf.d/' \	
 	&& apk add --no-cache \
-		libmemcached-libs \
-	#php and ext
+		# libmemcached-libs \
+		#php and ext
 		php7-mcrypt \
 		php7-openssl \
         php7-curl \
@@ -31,7 +31,7 @@ RUN	echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/reposit
 		php7-iconv \
 		php7-ctype \
 		php7\
-		php7-memcached \		
+		# php7-memcached \
 		php7-session \
     # Set php.ini
     && CHANGE_INI(){ \
@@ -44,11 +44,9 @@ RUN	echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/reposit
 	&& CHANGE_INI display_errors 1 \
 	&& CHANGE_INI display_startup_errors 1 \
 	&& CHANGE_INI zend.assertions 0 \
-	&& ADD_INI(){ echo "$*">> $PHP_INI; } \
-	&& ADD_INI [yaf] \
-	&& ADD_INI extension = yaf.so \	
-	&& ADD_INI extension = redis.so \		
-	&& ADD_INI yaf.environ = dev \
+	&& ADD_EXT(){ echo "extension = ${1}.so \n${2}" > "$PHP_CONF/90_${1}.ini"; } \
+	&& ADD_EXT redis \
+	&& ADD_EXT yaf "[yaf]\nyaf.environ = dev" \
 	&& ln -s /usr/bin/php7 /usr/bin/php \
 	&& sed -i '$ d' /etc/apk/repositories \
 	# ClEAN
