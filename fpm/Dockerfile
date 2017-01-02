@@ -15,16 +15,16 @@ RUN	FPM_CONF='/etc/php7/php-fpm.conf' \
 		php7-fpm \
 		php7-mcrypt \
 		php7-openssl \
-        php7-curl \
+		php7-curl \
 		php7-json \
 		php7-dom \
 		php7-bcmath \
 		php7-gd \
-        php7-pdo \
+		php7-pdo \
 		php7-pdo_mysql \
 		php7-pdo_sqlite \
-        php7-pdo_odbc \
-    	php7-pdo_dblib \
+		php7-pdo_odbc \
+		php7-pdo_dblib \
 		php7-gettext \
 		php7-iconv \
 		php7-ctype \
@@ -51,10 +51,10 @@ RUN	FPM_CONF='/etc/php7/php-fpm.conf' \
 	&& adduser -u 82 -D -S -G $FPM_USER $FPM_USER \
 	&& ln -s /usr/sbin/php-fpm7 /usr/local/bin/php-fpm \
 	## config php# Set php.ini
-    && CHANGE_INI(){ \
-        if [ $(cat ${PHP_INI} | grep -c "^\s*$1") -eq 0 ] ;\
-        then echo "$1=$2" >> ${PHP_INI} ;\ 
-        else sed -i "s/^\s*$1.*$/$1=$2/" ${PHP_INI}; fi; } \
+	&& CHANGE_INI(){ \
+		if [ $(cat ${PHP_INI} | grep -c "^\s*$1") -eq 0 ] ;\
+		then echo "$1=$2" >> ${PHP_INI} ;\ 
+		else sed -i "s/^\s*$1.*$/$1=$2/" ${PHP_INI}; fi; } \
 	&& CHANGE_INI date.timezone ${TIMEZONE} \
 	&& CHANGE_INI upload_max_filesize ${MAX_UPLOAD} \
 	&& CHANGE_INI cgi.fix_pathinfo 0 \
