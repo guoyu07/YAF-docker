@@ -29,7 +29,7 @@ RUN  BUILD(){ \
         curl -#SL https://pecl.php.net/get/$1.tgz | tar zx -C $TMP \
         && cd "$TMP/$1" && phpize7 &&./configure --with-php-config=php-config7 && make test && make install \
         && cp /$TMP/$1/modules/*.so $DIR;} \
-    && BUILD yaf-3.0.4
+    && BUILD yaf-3.0.4 \
     && BUILD redis-3.1.0
 
 # RUN apk del .fetch-deps

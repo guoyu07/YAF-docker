@@ -30,10 +30,9 @@ RUN	echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/reposit
 		php7-gettext \
 		php7-iconv \
 		php7-ctype \
-		php7-phar \
 		php7\
-		php7-memcached \
-		php7-redis \
+		php7-memcached \		
+		php7-session \
     # Set php.ini
     && CHANGE_INI(){ \
         if [ $(cat ${PHP_INI} | grep -c "^\s*$1") -eq 0 ] ;\
@@ -48,6 +47,7 @@ RUN	echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/reposit
 	&& ADD_INI(){ echo "$*">> $PHP_INI; } \
 	&& ADD_INI [yaf] \
 	&& ADD_INI extension = yaf.so \	
+	&& ADD_INI extension = redis.so \		
 	&& ADD_INI yaf.environ = dev \
 	&& ln -s /usr/bin/php7 /usr/bin/php \
 	&& sed -i '$ d' /etc/apk/repositories \
@@ -55,10 +55,10 @@ RUN	echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/reposit
 	&& rm -rf /var/cache/apk/* /var/tmp/* /tmp/*  /etc/ssl/* /usr/include/*
 
 #add extensions modules 
-COPY modules/ /usr/lib/php7/modules/
+COPY modules/*.so /usr/lib/php7/modules/
 
 WORKDIR /newfuture/yaf
 
 EXPOSE $PORT
 
-CMD php -S 0.0.0.0:$PORT $([ ! -f index.php ]&&[ -d public ]&&echo '-t public')
+CMD php7 -S 0.0.0.0:$PORT $([ ! -f index.php ]&&[ -d public ]&&echo '-t public')
