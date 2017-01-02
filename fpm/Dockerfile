@@ -1,16 +1,33 @@
-FROM newfuture/yaf:php7
+FROM alpine:3.5
 MAINTAINER New Future <docker@newfuture.cc>
 
 LABEL Name="YAF-docker" Description="mimimal docker image for PHP7 YAF with php-fpm"
 
 ENV FPM_PORT=9000 \
-	FPM_CONF=/etc/php7/php-fpm.conf \
-	FPM_PATH=/etc/php7/php-fpm.d \
 	FPM_USER=www-data
 	
 # instal PHP-fpm
-RUN	apk add --no-cache php7-fpm \
-	# config
+RUN	FPM_CONF='/etc/php7/php-fpm.conf' \
+	&& FPM_PATH='/etc/php7/php-fpm.d' \
+	&& apk add --no-cache php7-fpm \
+		php7-mcrypt \
+		php7-openssl \
+        php7-curl \
+		php7-json \
+		php7-dom \
+		php7-bcmath \
+		php7-gd \
+        php7-pdo \
+		php7-pdo_mysql \
+		php7-pdo_sqlite \
+        php7-pdo_odbc \
+    	php7-pdo_dblib \
+		php7-gettext \
+		php7-iconv \
+		php7-ctype \
+		php7-session \
+		# php7\		
+	# config php-fpm
 	&& echo -e "[global] \
 		\n error_log = /proc/self/fd/2 \
 		\n include = ${FPM_PATH}/*.conf "> $FPM_CONF \
@@ -30,6 +47,21 @@ RUN	apk add --no-cache php7-fpm \
 	&& addgroup -g 82 -S $FPM_USER \
 	&& adduser -u 82 -D -S -G $FPM_USER $FPM_USER \
 	&& ln -s /usr/bin/php-fpm7 /usr/local/bin/php-fpm \
+	## config php# Set php.ini
+    && CHANGE_INI(){ \
+        if [ $(cat ${PHP_INI} | grep -c "^\s*$1") -eq 0 ] ;\
+        then echo "$1=$2" >> ${PHP_INI} ;\ 
+        else sed -i "s/^\s*$1.*$/$1=$2/" ${PHP_INI}; fi; } \
+	&& CHANGE_INI date.timezone ${TIMEZONE} \
+	&& CHANGE_INI upload_max_filesize ${MAX_UPLOAD} \
+	&& CHANGE_INI cgi.fix_pathinfo 0 \
+	&& CHANGE_INI display_errors 1 \
+	&& CHANGE_INI display_startup_errors 1 \
+	&& CHANGE_INI zend.assertions 0 \
+	&& ADD_EXT(){ echo "extension = ${1}.so; \\n${2}" > "$PHP_CONF/90_${1}.ini"; } \
+	&& ADD_EXT redis \
+	&& ADD_EXT yaf "[yaf]\\nyaf.environ = dev" \
+	&& ln -s /usr/bin/php7 /usr/local/bin/php \
 	# Clean
 	&& rm -rf /var/cache/apk/* \
 		/var/tmp/* \
