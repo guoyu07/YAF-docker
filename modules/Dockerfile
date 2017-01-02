@@ -6,16 +6,24 @@ ENV TMP="/tmp/" \
 WORKDIR $DIR
 VOLUME ["/home/newfuture/docker/YAF-docker/modules","$DIR"]
 
-# RUN apk update && apk upgrade
 
-RUN apk add --no-cache\
+RUN apk update && apk upgrade
+
+RUN apk add \
         curl \
         autoconf \
+        pkgconf \
+        file \
         g++ \
         gcc \
         make \
-        php7-dev\
-        zlib-dev 
+        zlib-dev \
+        re2c
+
+RUN apk add \
+        php7 \
+        php7-dev \
+        php7-session
 
 # RUN apk add ca-certificates
 
