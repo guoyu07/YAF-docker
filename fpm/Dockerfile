@@ -67,7 +67,7 @@ RUN	FPM_CONF='/etc/php7/php-fpm.conf' \
 	&& ADD_EXT redis \
 	&& ADD_EXT yaf "[yaf]\\nyaf.environ = dev" \
 	# Clean
-	&& apk cache clean \
+	# && apk cache clean \
 	&& rm -rf /var/cache/apk/* \
 		/var/tmp/* \
 		/etc/ssl/certs/*.pem \

@@ -49,7 +49,7 @@ RUN	PHP_INI='/etc/php7/php.ini' \
 	&& ADD_EXT yaf "[yaf]\\nyaf.environ = dev" \
 	&& ln -s /usr/bin/php7 /usr/local/bin/php \
 	# ClEAN
-	&& apk cache clean \
+	# && apk cache clean \
 	&& rm -rf /var/cache/apk/* \
 		/var/tmp/* \
 		/tmp/* \
