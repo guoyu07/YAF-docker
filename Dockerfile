@@ -44,9 +44,9 @@ RUN	PHP_INI='/etc/php7/php.ini' \
 	&& CHANGE_INI display_errors 1 \
 	&& CHANGE_INI display_startup_errors 1 \
 	&& CHANGE_INI zend.assertions 0 \
-	&& ADD_EXT(){ echo "extension = ${1}.so \n${2}" > "$PHP_CONF/90_${1}.ini"; } \
+	&& ADD_EXT(){ echo "extension = ${1}.so; \\n${2}" > "$PHP_CONF/90_${1}.ini"; } \
 	&& ADD_EXT redis \
-	&& ADD_EXT yaf "[yaf]\nyaf.environ = dev" \
+	&& ADD_EXT yaf "[yaf]\\nyaf.environ = dev" \
 	&& ln -s /usr/bin/php7 /usr/bin/php \
 	&& sed -i '$ d' /etc/apk/repositories \
 	# ClEAN
