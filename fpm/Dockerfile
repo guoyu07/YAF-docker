@@ -4,7 +4,9 @@ MAINTAINER New Future <docker@newfuture.cc>
 LABEL Name="YAF-docker" Description="mimimal docker image for PHP7 YAF with php-fpm"
 
 ENV FPM_PORT=9000 \
-	FPM_USER=www-data
+	FPM_USER=www-data \
+	TIMEZONE=UTC \
+	MAX_UPLOAD=50M
 	
 # instal PHP-fpm
 RUN	FPM_CONF='/etc/php7/php-fpm.conf' \
@@ -65,11 +67,14 @@ RUN	FPM_CONF='/etc/php7/php-fpm.conf' \
 	&& ADD_EXT redis \
 	&& ADD_EXT yaf "[yaf]\\nyaf.environ = dev" \
 	# Clean
+	&& apk cache clean \
 	&& rm -rf /var/cache/apk/* \
 		/var/tmp/* \
-		/etc/ssl/* \
-		/usr/include/* \
-		/tmp/* 
+		/etc/ssl/certs/*.pem \
+		/etc/ssl/certs/*.0 \
+		/usr/share/ca-certificates/mozilla/* \
+		/usr/share/man/* \
+		/usr/include/*
 
 #add extensions modules 
 COPY modules/*.so /usr/lib/php7/modules/

@@ -48,9 +48,16 @@ RUN	PHP_INI='/etc/php7/php.ini' \
 	&& ADD_EXT redis \
 	&& ADD_EXT yaf "[yaf]\\nyaf.environ = dev" \
 	&& ln -s /usr/bin/php7 /usr/local/bin/php \
-	# && sed -i '$ d' /etc/apk/repositories \
 	# ClEAN
-	&& rm -rf /var/cache/apk/* /var/tmp/* /tmp/*  /etc/ssl/* /usr/include/*
+	&& apk cache clean \
+	&& rm -rf /var/cache/apk/* \
+		/var/tmp/* \
+		/tmp/* \
+		/etc/ssl/certs/*.pem \
+		/etc/ssl/certs/*.0 \
+		/usr/share/ca-certificates/mozilla/* \
+		/usr/share/man/* \
+		/usr/include/*
 
 #add extensions modules 
 COPY fpm/modules/*.so /usr/lib/php7/modules/

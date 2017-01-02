@@ -12,7 +12,7 @@ based on alpine (the mini size docke image)
 
 * include extensions:
     - [YAF-2.3.5](https://github.com/laruence/yaf)
-    - redis
+    - redis-3.1.0
     - memcached
     - memcache
     - PDO-*
@@ -24,7 +24,7 @@ based on alpine (the mini size docke image)
 
 * include extensions:
     - [YAF-3.0.4](https://github.com/laruence/yaf)
-    - redis
+    - redis-3.1.0
     - PDO-*
     - mcrypt
     - curl
