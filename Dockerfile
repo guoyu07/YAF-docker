@@ -52,7 +52,7 @@ RUN	PHP_INI='/etc/php7/php.ini' \
 	&& rm -rf /var/cache/apk/* /var/tmp/* /tmp/*  /etc/ssl/* /usr/include/*
 
 #add extensions modules 
-COPY modules/*.so /usr/lib/php7/modules/
+COPY fpm/modules/*.so /usr/lib/php7/modules/
 
 WORKDIR /newfuture/yaf
 

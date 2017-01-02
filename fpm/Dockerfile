@@ -9,7 +9,10 @@ ENV FPM_PORT=9000 \
 # instal PHP-fpm
 RUN	FPM_CONF='/etc/php7/php-fpm.conf' \
 	&& FPM_PATH='/etc/php7/php-fpm.d' \
-	&& apk add --no-cache php7-fpm \
+	&& PHP_INI='/etc/php7/php.ini' \
+	&& PHP_CONF='/etc/php7/conf.d/' \	
+	&& apk add --no-cache \
+		php7-fpm \
 		php7-mcrypt \
 		php7-openssl \
         php7-curl \
@@ -46,7 +49,7 @@ RUN	FPM_CONF='/etc/php7/php-fpm.conf' \
 	&& ADD_CONF catch_workers_output = yes \
 	&& addgroup -g 82 -S $FPM_USER \
 	&& adduser -u 82 -D -S -G $FPM_USER $FPM_USER \
-	&& ln -s /usr/bin/php-fpm7 /usr/local/bin/php-fpm \
+	&& ln -s /usr/sbin/php-fpm7 /usr/local/bin/php-fpm \
 	## config php# Set php.ini
     && CHANGE_INI(){ \
         if [ $(cat ${PHP_INI} | grep -c "^\s*$1") -eq 0 ] ;\
@@ -61,7 +64,6 @@ RUN	FPM_CONF='/etc/php7/php-fpm.conf' \
 	&& ADD_EXT(){ echo "extension = ${1}.so; \\n${2}" > "$PHP_CONF/90_${1}.ini"; } \
 	&& ADD_EXT redis \
 	&& ADD_EXT yaf "[yaf]\\nyaf.environ = dev" \
-	&& ln -s /usr/bin/php7 /usr/local/bin/php \
 	# Clean
 	&& rm -rf /var/cache/apk/* \
 		/var/tmp/* \
@@ -69,6 +71,9 @@ RUN	FPM_CONF='/etc/php7/php-fpm.conf' \
 		/usr/include/* \
 		/tmp/* 
 
+#add extensions modules 
+COPY modules/*.so /usr/lib/php7/modules/
+
 EXPOSE $FPM_PORT
 
-CMD ["/usr/bin/php-fpm7","-F"]
+CMD ["/usr/sbin/php-fpm7","-F"]
