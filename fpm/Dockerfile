@@ -1,4 +1,4 @@
-FROM alpine:3.5
+FROM newfuture/yaf:php7
 MAINTAINER New Future <docker@newfuture.cc>
 
 LABEL Name="YAF-docker" Description="mimimal docker image for PHP7 YAF with php-fpm"
@@ -29,14 +29,14 @@ RUN	apk add --no-cache php7-fpm \
 	&& ADD_CONF catch_workers_output = yes \
 	&& addgroup -g 82 -S $FPM_USER \
 	&& adduser -u 82 -D -S -G $FPM_USER $FPM_USER \
+	&& ln -s /usr/bin/php-fpm7 /usr/local/bin/php-fpm \
 	# Clean
 	&& rm -rf /var/cache/apk/* \
 		/var/tmp/* \
 		/etc/ssl/* \
-		/etc/init.d/php-fpm \
 		/usr/include/* \
 		/tmp/* 
 
 EXPOSE $FPM_PORT
 
-CMD ["/usr/bin/php-fpm","-F"]
+CMD ["/usr/bin/php-fpm7","-F"]

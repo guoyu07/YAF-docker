@@ -5,7 +5,6 @@ LABEL Name="YAF-docker" Description="mimimal docker image for PHP7 YAF"
 
 # Environments
 ENV TIMEZONE=UTC \
-	PHP_MEMORY_LIMIT=512M \
 	MAX_UPLOAD=50M \
 	PORT=80
 
@@ -47,7 +46,7 @@ RUN	PHP_INI='/etc/php7/php.ini' \
 	&& ADD_EXT(){ echo "extension = ${1}.so; \\n${2}" > "$PHP_CONF/90_${1}.ini"; } \
 	&& ADD_EXT redis \
 	&& ADD_EXT yaf "[yaf]\\nyaf.environ = dev" \
-	&& ln -s /usr/bin/php7 /usr/bin/php \
+	&& ln -s /usr/bin/php7 /usr/local/bin/php \
 	&& sed -i '$ d' /etc/apk/repositories \
 	# ClEAN
 	&& rm -rf /var/cache/apk/* /var/tmp/* /tmp/*  /etc/ssl/* /usr/include/*
